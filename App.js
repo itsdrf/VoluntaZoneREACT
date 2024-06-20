@@ -1,18 +1,43 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Image, ScrollView, SafeAreaView, Dimensions } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, View, Text, TouchableOpacity, Image, ScrollView, SafeAreaView, Dimensions, Alert } from 'react-native';
+import * as Location from 'expo-location'; // Pacote para geolocalização
 
 const { width } = Dimensions.get('window');
 
 const App = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [location, setLocation] = useState(null);
+  const [errorMsg, setErrorMsg] = useState(null);
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
   };
 
+  const getLocation = async () => {
+    let { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== 'granted') {
+      setErrorMsg('Permissão para acessar a localização foi negada.');
+      return;
+    }
+
+    try {
+      const location = await Location.getCurrentPositionAsync({});
+      setLocation(location);
+    } catch (error) {
+      setErrorMsg(error.message);
+    }
+  };
+
+  const showLocationErrorAlert = () => {
+    Alert.alert(
+      'Erro ao obter localização',
+      errorMsg || 'Ocorreu um erro ao tentar obter sua localização.',
+      [{ text: 'OK' }]
+    );
+  };
+
   return (
     <SafeAreaView style={styles.container}>
-      {VoluntaZONE}
       <View style={styles.header}>
         <View style={styles.logo}>
           <Text style={styles.logoText}>Volunta Zone</Text>
@@ -37,7 +62,6 @@ const App = () => {
         </View>
       </View>
 
-      
       {menuOpen && (
         <ScrollView style={styles.mobileMenu}>
           <Text style={styles.navItem}>Início</Text>
@@ -49,9 +73,7 @@ const App = () => {
         </ScrollView>
       )}
 
-    
       <ScrollView style={styles.content}>
-       
         <View style={styles.informes}>
           <Image
             source={require('./assets/1.jpg')}
@@ -71,7 +93,6 @@ const App = () => {
           </View>
         </View>
 
-     
         <View style={styles.testimonials}>
           <Text style={styles.sectionTitle}>
             Depoimentos
@@ -125,6 +146,16 @@ const App = () => {
           </TouchableOpacity>
         </View>
       </ScrollView>
+
+      {location && (
+        <View style={styles.locationInfo}>
+          <Text style={styles.locationText}>
+            Latitude: {location.coords.latitude.toFixed(6)}, Longitude: {location.coords.longitude.toFixed(6)}
+          </Text>
+        </View>
+      )}
+
+      {errorMsg && showLocationErrorAlert()}
     </SafeAreaView>
   );
 };
@@ -137,6 +168,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
     paddingVertical: 10,
     paddingHorizontal: 20,
     backgroundColor: '#24252a',
@@ -288,6 +320,16 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  locationInfo: {
+    backgroundColor: '#fff',
+    padding: 10,
+    margin: 20,
+    borderRadius: 10,
+  },
+  locationText: {
+    fontSize: 16,
+    color: '#000',
   },
 });
 
