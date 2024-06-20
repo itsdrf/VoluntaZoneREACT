@@ -12,7 +12,7 @@ const App = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header */}
+      {VoluntaZONE}
       <View style={styles.header}>
         <View style={styles.logo}>
           <Text style={styles.logoText}>Volunta Zone</Text>
@@ -37,7 +37,7 @@ const App = () => {
         </View>
       </View>
 
-      {/* Mobile Menu */}
+      
       {menuOpen && (
         <ScrollView style={styles.mobileMenu}>
           <Text style={styles.navItem}>Início</Text>
@@ -49,9 +49,9 @@ const App = () => {
         </ScrollView>
       )}
 
-      {/* Main Content */}
+    
       <ScrollView style={styles.content}>
-        {/* Informes */}
+       
         <View style={styles.informes}>
           <Image
             source={require('./assets/1.jpg')}
@@ -71,7 +71,7 @@ const App = () => {
           </View>
         </View>
 
-        {/* Testimonials */}
+     
         <View style={styles.testimonials}>
           <Text style={styles.sectionTitle}>
             Depoimentos
